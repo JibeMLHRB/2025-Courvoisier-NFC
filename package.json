@@ -1,0 +1,78 @@
+{
+  "name": "courvoisier-malherbe-nfc",
+  "main": "out/main/main.js",
+  "productName": "Courvoisier Malherbe NFC",
+  "author": {
+    "name": "Malherbe",
+    "email": "hello@loukail.xyz"
+  },
+  "version": "0.0.1",
+  "description": "Courvoisier Malherbe NFC",
+  "scripts": {
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
+    "start": "npm run build && electron-vite preview --skipBuild",
+    "prev": "electron-vite preview --skipBuild",
+    "dev": "electron-vite dev",
+    "build": "electron-vite build && npm run rebuild",
+    "build:win": "npm run build && electron-builder --win --config electron-builder.production.js",
+    "build:mac": "npm run build && electron-builder --mac --config electron-builder.production.js",
+    "build:linux": "npm run build && electron-builder --linux --config electron-builder.production.js",
+    "rebuild": "npx electron-rebuild",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "dependencies": {
+    "@electron-toolkit/preload": "^3.0.1",
+    "@electron-toolkit/utils": "^3.0.0",
+    "@emotion/styled": "^11.13.0",
+    "@mui/icons-material": "^6.1.0",
+    "@mui/material": "^6.1.0",
+    "easymidi": "^3.1.0"
+  },
+  "devDependencies": {
+    "@electron-toolkit/eslint-config": "^1.0.2",
+    "@electron-toolkit/eslint-config-prettier": "^2.0.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "electron": "^31.1.0",
+    "electron-builder": "^25.0.5",
+    "electron-vite": "^2.3.0",
+    "eslint": "^9.10.0",
+    "eslint-plugin-react": "^7.36.1",
+    "lint-staged": "^15.2.10",
+    "prettier": "^3.3.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "vite": "^5.4.6"
+  },
+  "build": {
+    "npmRebuild": "false",
+    "appId": "com.Courvoisier.app",
+    "files": [
+      "out/main/main.js",
+      "out/preload/preload.js",
+      "node_modules//*"
+    ],
+    "extraResources": [
+      {
+        "from": "out/renderer/",
+        "to": "renderer"
+      }
+    ],
+    "mac": {
+      "icon": "./resources/icon.png",
+      "target": "dmg"
+    },
+    "win": {
+      "icon": "./resources/icon.png",
+      "target": "nsis"
+    },
+    "nsis": {
+      "unicode": false,
+      "installerIcon": "./resources/icon.ico",
+      "artifactName": "Courvoisier_Malherbe_NFC.exe"
+    },
+    "dmg": {
+      "title": "Courvoisier_Malherbe_NFC"
+    }
+  }
+}

@@ -1,11 +1,12 @@
 import { resolve } from 'path'
 import { defineConfig, externalizeDepsPlugin } from 'electron-vite'
-import react from '@vitejs/plugin-react'
+
 
 const defaultConfig = {
   main: {
     plugins: [externalizeDepsPlugin()],
     build: {
+      copyPublicDir: true,
       lib: {
         entry: './electron/main.js'
       }
@@ -22,7 +23,13 @@ const defaultConfig = {
   renderer: {
     appType: 'mpa',
     build: {
+
       rollupOptions: {
+        output: {
+          entryFileNames: `assets/[name].js`,
+          chunkFileNames: `assets/[name].js`,
+          assetFileNames: `assets/[name].[ext]`
+        },
         input: {
           main: resolve(__dirname, 'src/renderer/index.html')
         }
@@ -33,7 +40,6 @@ const defaultConfig = {
         '@renderer': resolve('src/renderer')
       }
     },
-    plugins: [react()]
   }
 }
 

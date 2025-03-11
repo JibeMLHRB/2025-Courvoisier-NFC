@@ -3,19 +3,18 @@ import { electronAPI } from "@electron-toolkit/preload";
 
 // Custom APIs for renderer
 const api = {
-  // Method to trigger function in renderer process from main process
+  // Réception des tags NFC
   tagData: (callback) => ipcRenderer.on("tagData", callback),
-  // Method to trigger function in main process from renderer process
-  // X: (callback) => ipcRenderer.send('X', callback),
+
+  // Envoi d'événements au process principal (ex: ouvrir le clavier OSK)
+  send: (channel, data) => ipcRenderer.send(channel, data)
 };
 
-// Use `contextBridge` APIs to expose Electron APIs to
-// renderer only if context isolation is enabled, otherwise
-// just add to the DOM global.
+// Exposer l'API au renderer
 if (process.contextIsolated) {
   try {
     contextBridge.exposeInMainWorld("electron", electronAPI);
-    contextBridge.exposeInMainWorld("api", api);
+    contextBridge.exposeInMainWorld("api", api); // 🔥 Ajout de send()
   } catch (error) {
     console.error(error);
   }

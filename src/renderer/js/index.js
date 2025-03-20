@@ -442,7 +442,7 @@ const startAgeGate = () => {
 
   document.querySelector('.step-agegate').classList.remove('off')
 
-  if(mode!="mobile"){
+  if (mode != "mobile") {
     document.querySelector('.content-red').classList.remove('off')
   }
 
@@ -561,7 +561,7 @@ document.querySelector('.cta-gift').addEventListener('click', () => {
 
   if (mode == "mobile") {
     var productName = document.querySelector('.select-box .selected').getAttribute('value')
-    window.open('https://test.gtr.courvoisier.com/dev/discover/#'+productName)
+    window.open('https://test.gtr.courvoisier.com/dev/discover/#' + productName)
     replay()
   }
 
@@ -709,6 +709,8 @@ function copy() {
 
 
 const showStat = () => {
+
+
   statNumbers[0].innerHTML = stats.nVisit
   statNumbers[1].innerHTML = stats.ageGate[1] + " / " + stats.ageGate[2]
   statNumbers[2].innerHTML = stats['product0'][0] + " / " + stats['product0'][1] + " / " + stats['product0'][2] + " / " + stats['product0'][3]
@@ -730,7 +732,13 @@ var timerLogo;
 
 document.querySelector('header img').addEventListener('pointerdown', () => {
   if (mode != 'mobile') {
-    timerLogo = setTimeout(() => { showStat() }, 2500)
+    timerLogo = setTimeout(() => { 
+
+      stats.nVisit--
+      setData("nVisit")
+
+      showStat()
+     }, 2500)
   }
 })
 
@@ -738,8 +746,15 @@ document.body.addEventListener('pointerup', () => {
   clearTimeout(timerLogo)
 })
 
+document.querySelector('.cta-reset').addEventListener('click', () => {
+  document.querySelector('.confirm').classList.add('open')
+})
 
-document.querySelector('.stats .cta').addEventListener('click', () => {
+document.querySelector('.cta-conf-no').addEventListener('click', () => {
+  document.querySelector('.confirm').classList.remove('open')
+})
+
+document.querySelector('.cta-conf-yes').addEventListener('click', () => {
   stats = {
     nVisit: 0,
     ageGate: [0, 0, 0],
@@ -761,10 +776,13 @@ document.querySelector('.stats .cta').addEventListener('click', () => {
   setData('product3')
   setData('product4')
   setData('product5')
+
+  document.querySelector('.confirm').classList.remove('open')
+  showStat()
 })
 
 
-document.querySelector('.stats').addEventListener('click', () => {
+document.querySelector('.close-cta').addEventListener('click', () => {
   document.querySelector('.stats').classList.remove('open')
 })
 

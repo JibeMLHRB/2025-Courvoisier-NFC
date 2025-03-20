@@ -59,9 +59,11 @@ function createWindow() {
     mainWindow.setFullScreen(!mainWindow.isFullScreen());
   });
 
+  /*
   globalShortcut.register("e", () => {
     mainWindow.close();
   });
+*/
 
   mainWindow.on("ready-to-show", () => {
     mainWindow.show();

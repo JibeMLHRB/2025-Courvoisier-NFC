@@ -75,10 +75,19 @@
     background: black;
 }
 
+
 .cta-age:hover,
 .cta-age:active {
     background: #AD152B;
 }
+
+
+.cta:hover,
+.cta:active {
+    background: #000;
+    color:white;
+}
+
 
 
 .cta-second {
@@ -190,7 +199,7 @@ footer {
     align-items: center;
     text-align: center;
     width: 100%;
-    top: 74vh;
+    top: 72vh;
 }
 
 .tuto-slide {

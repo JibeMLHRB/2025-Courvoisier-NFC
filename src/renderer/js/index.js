@@ -391,6 +391,7 @@ const main = document.querySelector('main')
 const startTuto = () => {
   document.querySelector('.preloader').classList.add('off')
   document.querySelector('.preloader').classList.remove('appear')
+  document.querySelector('footer').classList.remove('off')
   videoTuto.currentTime = 0
   videoTuto.play()
 
@@ -530,6 +531,7 @@ const replay = () => {
   document.querySelector('.age-content').classList.remove('active')
   document.querySelector('.age-content-title').classList.remove('active')
 
+
   videoTuto.currentTime = 0
   videoTuto.play()
 
@@ -541,7 +543,7 @@ const replay = () => {
     document.querySelector('.step-note3').classList.add('off')
     document.querySelector('.step-note4').classList.add('off')
     document.querySelector('.step-qr').classList.add('off')
-
+    document.querySelector('footer').classList.remove('off')
 
   }, 500)
 

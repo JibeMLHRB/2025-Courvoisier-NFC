@@ -72,7 +72,7 @@ myHeaders.append("Content-Type", "application/json");
 const ENDPOINT_URL = 'https://gtr.malherbe-paris.tech/api/data.post.php'; // à adapter
 
 
-const MS_IN_24_HOURS = 24 * 60 * 1000;//24 * 60 * 60 * 1000
+const MS_IN_24_HOURS = 24 * 60 * 60 * 1000;//24 * 60 * 60 * 1000
 const RETRY_INTERVAL_MS = 10 * 1000; // 10s
 
 function getLastSendTime() {
@@ -105,7 +105,7 @@ function sendData() {
       "no": stats.ageGate[2]
     },
     "device_id": stats.device_id.length > 0 ? stats.device_id : "GTR Demo",
-    "number_of_visits": stats.nVisit,
+    "number_of_sessions": stats.nVisit,
     "nfc_scans": stats.ageGate[0],
     "qr_code_views": stats['product0'][4] + stats['product1'][4] + stats['product2'][4] + stats['product3'][4] + stats['product4'][4] + stats['product5'][4],
     "extra": {
@@ -153,9 +153,6 @@ function sendData() {
   });
 
 
-
-
-
   var requestOptions = {
     method: "POST",
     headers: myHeaders,
@@ -189,8 +186,13 @@ function checkData() {
 }
 
 // Lancement automatique au chargement de la page
-window.addEventListener('load', checkData);
 
+window.addEventListener('load', ()=>{
+  console.log('ready')
+  sendData();
+})
+
+//window.addEventListener('load', checkData);
 setInterval(checkData, 30000)
 
 //////////////////

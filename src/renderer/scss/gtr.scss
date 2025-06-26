@@ -428,8 +428,16 @@ footer {
     width: 70vw;
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
     font-size: 3vw;
     color: black;
+}
+
+input{
+    background-color: transparent;
+    border: 1px solid #AD152B;
+    border-radius: 4px;
+    padding: 4px 8px;
 }
 
 .stats-right {

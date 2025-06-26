@@ -8,10 +8,21 @@ const invlerp = (x, y, a) => clamp((a - x) / (y - x));
 const range = (x1, y1, x2, y2, a) => lerp(x2, y2, invlerp(x1, y1, a));
 
 
+const getData = (name) => {
+  if (localStorage.getItem(name)) {
+    stats[name] = JSON.parse(localStorage.getItem(name))
+  }
+}
+
+const setData = (name) => {
+  localStorage.setItem(name, JSON.stringify(stats[name]))
+}
+
 var mode = "local"
 
 
 var stats = {
+  device_id: "GTR Demo",
   nVisit: 0,
   ageGate: [0, 0, 0],
   product0: [0, 0, 0, 0, 0],
@@ -23,28 +34,28 @@ var stats = {
 
 }
 
+getData('device_id')
+document.querySelector('#device_id').value = stats.device_id
 
-const getData = (name) => {
-  if (localStorage.getItem(name)) {
-    stats[name] = JSON.parse(localStorage.getItem(name))
-  }
-}
 
-const setData = (name) => {
-  localStorage.setItem(name, JSON.stringify(stats[name]))
-}
 
 const visitStep = (nProduct, nStep) => {
   stats["product" + nProduct][nStep]++
   setData("product" + nProduct)
-
 }
 
 
 const newVisit = () => {
   stats.nVisit++
   setData("nVisit")
+
+  console.warn('visit')
 }
+
+document.querySelector('#device_id').addEventListener('input', () => {
+  stats.device_id = document.querySelector('#device_id').value
+  setData('device_id')
+})
 
 
 var keys = Object.keys(stats);
@@ -54,7 +65,135 @@ keys.forEach(key => {
 })
 
 
+//////// DATA TIME  ///////////
 
+const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+const ENDPOINT_URL = 'https://gtr.malherbe-paris.tech/api/data.post.php'; // à adapter
+
+
+const MS_IN_24_HOURS = 1 * 60 * 1000;//24 * 60 * 60 * 1000
+const RETRY_INTERVAL_MS = 10 * 1000; // 10s
+
+function getLastSendTime() {
+  const timestamp = localStorage.getItem('lastSendTime');
+  console.log('lastSendTime', timestamp)
+
+  return timestamp ? new Date(parseInt(timestamp, 10)) : null;
+}
+
+function setLastSendTime(date = new Date()) {
+  localStorage.setItem('lastSendTime', date.getTime().toString());
+}
+
+function shouldSendData() {
+  const lastSendTime = getLastSendTime();
+
+  if (!lastSendTime) return true;
+  const now = new Date();
+
+  console.log(now - lastSendTime, MS_IN_24_HOURS)
+
+  return now - lastSendTime >= MS_IN_24_HOURS;
+}
+
+
+function sendData() {
+  var raw = JSON.stringify({
+    "age_gate": {
+      "yes": stats.ageGate[1],
+      "no": stats.ageGate[2]
+    },
+    "device_id": stats.device_id.length > 0 ? stats.device_id : "GTR Demo",
+    "number_of_visits": stats.nVisit,
+    "nfc_scans": stats.ageGate[0],
+    "qr_code_views": stats['product0'][4] + stats['product1'][4] + stats['product2'][4] + stats['product3'][4] + stats['product4'][4] + stats['product5'][4],
+    "extra": {
+      "note_1": stats['product0'][0],
+      "note_2": stats['product0'][1],
+      "note_3": stats['product0'][2],
+      "reveal": stats['product0'][3],
+      "qr_code_views": stats['product0'][4],
+    },
+    "essence": {
+      "note_1": stats['product1'][0],
+      "note_2": stats['product1'][1],
+      "note_3": stats['product1'][2],
+      "reveal": stats['product1'][3],
+      "qr_code_views": stats['product1'][4],
+    },
+    "vs": {
+      "note_1": stats['product2'][0],
+      "note_2": stats['product2'][1],
+      "note_3": stats['product2'][2],
+      "reveal": stats['product2'][3],
+      "qr_code_views": stats['product2'][4],
+    },
+    "vsop": {
+      "note_1": stats['product3'][0],
+      "note_2": stats['product3'][1],
+      "note_3": stats['product3'][2],
+      "reveal": stats['product3'][3],
+      "qr_code_views": stats['product3'][4],
+    },
+    "xo": {
+      "note_1": stats['product4'][0],
+      "note_2": stats['product4'][1],
+      "note_3": stats['product4'][2],
+      "reveal": stats['product4'][3],
+      "qr_code_views": stats['product4'][4],
+    },
+    "xo_royal": {
+      "note_1": stats['product5'][0],
+      "note_2": stats['product5'][1],
+      "note_3": stats['product5'][2],
+      "reveal": stats['product5'][3],
+      "qr_code_views": stats['product5'][4],
+    }
+  });
+
+
+
+
+
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: raw,
+    redirect: "follow"
+  };
+
+
+  return fetch(ENDPOINT_URL, requestOptions);
+}
+
+function attemptToSendDataWithRetry() {
+  sendData()
+    .then(response => {
+      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+      console.warn('Data sent successfully');
+      setLastSendTime(); // Update last send time only on success
+    })
+    .catch(err => {
+      console.warn('Failed to send data. Retrying in 1 minute...', err);
+      //setTimeout(attemptToSendDataWithRetry, RETRY_INTERVAL_MS);
+    });
+}
+
+function checkData() {
+  if (shouldSendData()) {
+    attemptToSendDataWithRetry();
+  } else {
+    console.log('Data already sent in the last 24h. No action taken.', localStorage.getItem('lastSendTime'));
+  }
+}
+
+// Lancement automatique au chargement de la page
+window.addEventListener('load', checkData);
+
+setInterval(checkData, 10000)
+
+//////////////////
 
 const products = [
   {
@@ -273,7 +412,7 @@ export const translate = (initLang) => {
 
     elements.forEach(element => {
       if (element.dataset.lang) {
-        console.log(data[element.dataset.lang][lang])
+        //console.log(data[element.dataset.lang][lang])
         element.innerHTML = data[element.dataset.lang][lang]
       }
 
@@ -339,7 +478,7 @@ const restart = () => {
 
   }, 2500)
 
-  newVisit()
+  //newVisit()
 }
 
 
@@ -356,6 +495,7 @@ if (location.hash.substring(1) != "debug") {
 const startTimer = () => {
   clearTimeout(backHome)
   backHome = setTimeout(() => {
+    AgeGateOK = false;
     restart()
     if (location.hash.length == 0) {
       setTimeout(() => {
@@ -547,7 +687,7 @@ const replay = () => {
 
   }, 500)
 
-  newVisit()
+  //newVisit()
 }
 
 ctaReplay.addEventListener('click', () => {
@@ -636,7 +776,6 @@ const tutoSlides = document.querySelectorAll('.tuto-slide')
 
 const animate = () => {
   var time = videoTuto.currentTime
-  console.log()
 
   tutoSlides[0].classList.remove('active')
   tutoSlides[1].classList.remove('active')
@@ -734,13 +873,13 @@ var timerLogo;
 
 document.querySelector('header img').addEventListener('pointerdown', () => {
   if (mode != 'mobile') {
-    timerLogo = setTimeout(() => { 
+    timerLogo = setTimeout(() => {
 
       stats.nVisit--
       setData("nVisit")
 
       showStat()
-     }, 2500)
+    }, 2500)
   }
 })
 
@@ -758,6 +897,7 @@ document.querySelector('.cta-conf-no').addEventListener('click', () => {
 
 document.querySelector('.cta-conf-yes').addEventListener('click', () => {
   stats = {
+    device_id: document.querySelector('#device_id').value,
     nVisit: 0,
     ageGate: [0, 0, 0],
     product0: [0, 0, 0, 0, 0],

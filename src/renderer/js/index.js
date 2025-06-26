@@ -72,7 +72,7 @@ myHeaders.append("Content-Type", "application/json");
 const ENDPOINT_URL = 'https://gtr.malherbe-paris.tech/api/data.post.php'; // à adapter
 
 
-const MS_IN_24_HOURS = 1 * 60 * 1000;//24 * 60 * 60 * 1000
+const MS_IN_24_HOURS = 24 * 60 * 1000;//24 * 60 * 60 * 1000
 const RETRY_INTERVAL_MS = 10 * 1000; // 10s
 
 function getLastSendTime() {
@@ -191,7 +191,7 @@ function checkData() {
 // Lancement automatique au chargement de la page
 window.addEventListener('load', checkData);
 
-setInterval(checkData, 10000)
+setInterval(checkData, 30000)
 
 //////////////////
 

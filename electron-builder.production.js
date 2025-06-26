@@ -9,6 +9,7 @@ const config = {
   ],
   extraResources: [
     "config.json",
+    "tags.json",
     {
       from: "out/renderer/",
       to: "renderer",

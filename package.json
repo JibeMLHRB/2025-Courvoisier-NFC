@@ -55,6 +55,8 @@
       "node_modules//*"
     ],
     "extraResources": [
+      "tags.json",
+      "config.json",
       {
         "from": "out/renderer/",
         "to": "renderer"

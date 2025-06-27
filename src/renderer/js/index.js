@@ -38,7 +38,6 @@ getData('device_id')
 document.querySelector('#device_id').value = stats.device_id
 
 
-
 const visitStep = (nProduct, nStep) => {
   stats["product" + nProduct][nStep]++
   setData("product" + nProduct)
@@ -69,21 +68,40 @@ keys.forEach(key => {
 
 const myHeaders = new Headers();
 myHeaders.append("Content-Type", "application/json");
-const ENDPOINT_URL = 'https://gtr.malherbe-paris.tech/api/data.post.php'; // à adapter
+const ENDPOINT_URL = 'https://gtr.malherbe-paris.tech/api/data.post.php';
 
 
 const MS_IN_24_HOURS = 24 * 60 * 60 * 1000;//24 * 60 * 60 * 1000
 const RETRY_INTERVAL_MS = 10 * 1000; // 10s
 
+
+function formatTimestamp(timestamp) {
+  const date = new Date(timestamp);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Mois de 0 à 11
+  const day = String(date.getDate()).padStart(2, '0');
+
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+
+}
+
 function getLastSendTime() {
   const timestamp = localStorage.getItem('lastSendTime');
-  console.log('lastSendTime', timestamp)
+  //console.log('lastSendTime', timestamp)
+  document.querySelector('.stats-date').innerHTML = formatTimestamp(parseInt(timestamp))
 
   return timestamp ? new Date(parseInt(timestamp, 10)) : null;
 }
 
 function setLastSendTime(date = new Date()) {
   localStorage.setItem('lastSendTime', date.getTime().toString());
+
 }
 
 function shouldSendData() {
@@ -92,6 +110,7 @@ function shouldSendData() {
   if (!lastSendTime) return true;
   const now = new Date();
 
+  console.clear()
   console.log(now - lastSendTime, MS_IN_24_HOURS)
 
   return now - lastSendTime >= MS_IN_24_HOURS;
@@ -169,10 +188,11 @@ function attemptToSendDataWithRetry() {
     .then(response => {
       if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
       console.warn('Data sent successfully');
-      setLastSendTime(); // Update last send time only on success
+      setLastSendTime();
+      getLastSendTime();
     })
     .catch(err => {
-      console.warn('Failed to send data. Retrying in 1 minute...', err);
+      console.warn('Failed to send data. Retrying in 30s', err);
       //setTimeout(attemptToSendDataWithRetry, RETRY_INTERVAL_MS);
     });
 }
@@ -185,11 +205,16 @@ function checkData() {
   }
 }
 
+document.querySelector('.send-data').addEventListener('click', () => {
+  attemptToSendDataWithRetry()
+})
+
 // Lancement automatique au chargement de la page
 
-window.addEventListener('load', ()=>{
+window.addEventListener('load', () => {
   console.log('ready')
-  sendData();
+  getLastSendTime()
+  attemptToSendDataWithRetry();
 })
 
 //window.addEventListener('load', checkData);

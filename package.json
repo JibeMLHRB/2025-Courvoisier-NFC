@@ -1,13 +1,13 @@
 {
   "name": "courvoisier-malherbe-nfc",
   "main": "out/main/main.js",
-  "productName": "Courvoisier Malherbe NFC",
+  "productName": "Courvoisier NFC",
   "author": {
     "name": "Malherbe",
-    "email": "hello@loukail.xyz"
+    "email": "jb.giffard@malherbe.paris"
   },
-  "version": "0.0.2",
-  "description": "Courvoisier Malherbe NFC",
+  "version": "0.0.3",
+  "description": "Courvoisier NFC",
   "scripts": {
     "format": "prettier --write .",
     "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix",
@@ -73,10 +73,10 @@
     "nsis": {
       "unicode": false,
       "installerIcon": "./resources/icon.ico",
-      "artifactName": "Courvoisier_Malherbe_NFC.exe"
+      "artifactName": "Courvoisier_NFC.exe"
     },
     "dmg": {
-      "title": "Courvoisier_Malherbe_NFC"
+      "title": "Courvoisier_NFC"
     }
   }
 }

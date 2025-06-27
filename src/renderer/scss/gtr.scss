@@ -85,7 +85,7 @@
 .cta:hover,
 .cta:active {
     background: #000;
-    color:white;
+    color: white;
 }
 
 
@@ -433,16 +433,30 @@ footer {
     color: black;
 }
 
-input{
+input {
     background-color: transparent;
     border: 1px solid #AD152B;
     border-radius: 4px;
     padding: 4px 8px;
+    text-align: right;
 }
 
 .stats-right {
     color: #AD152B;
     font-weight: 700;
+}
+
+.send-data {
+    font-size: 2vw;
+    text-decoration: underline;
+    cursor: pointer;
+    color: black;
+    transition: all .4s ease-in-out;
+}
+
+.send-data:hover {
+    color: #AD152B;
+    text-decoration: none;
 }
 
 .language {
@@ -644,14 +658,14 @@ input{
     font-size: 3vw;
     line-height: 3vw;
     text-align: center;
-    text-transform: uppercase ;
+    text-transform: uppercase;
 }
 
-.confirm .cta{
+.confirm .cta {
     height: 7vw;
-    margin-top:2vw;
+    margin-top: 2vw;
 }
 
-.confirm .cta-wrapper{
+.confirm .cta-wrapper {
     padding: 0 4vw;
 }

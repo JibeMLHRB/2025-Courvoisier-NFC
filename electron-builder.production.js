@@ -26,10 +26,10 @@ const config = {
   nsis: {
     unicode: false,
     installerIcon: "./resources/icon.ico",
-    artifactName: "Courvoisier_Malherbe_NFC.exe",
+    artifactName: "Courvoisier_NFC.exe",
   },
   dmg: {
-    title: "Courvoisier_Malherbe_NFC",
+    title: "Courvoisier_NFC",
   },
 };
 
